@@ -727,17 +727,29 @@ def task_detail(pid, width=70):
 
     out2 = []
     out2.append(stdict['State'].split()[0])
-    out2.append(policy[int(stat[statdef['rtpolicy']])])
-    if stat[statdef['rtpolicy']] == '0':
-        out2.append('th')
-    elif stat[statdef['rtpolicy']] == '3':
-        out2.append('at')
+    rtpolicy_index = statdef['rtpolicy']
+    if rtpolicy_index < 0 or rtpolicy_index > len(stat) - 1:
+        out2.append('?')
     else:
-        if int(stat[statdef['rtpriority']]) < 10:
-            out2.append('_')
-            out2.append(stat[statdef['rtpriority']])
+        policy_index = int(stat[statdef['rtpolicy']])
+        if policy_index < 0 or policy_index > len(policy) - 1:
+            out2.append('?')
         else:
-            out2.append(stat[statdef['rtpriority']].rjust(2))
+            out2.append(policy[int(stat[statdef['rtpolicy']])])
+        if stat[statdef['rtpolicy']] == '0':
+            out2.append('th')
+        elif stat[statdef['rtpolicy']] == '3':
+            out2.append('at')
+        else:
+            rtprio_index = statdef['rtpriority']
+            if rtprio_index < 0 or rtprio_index > len(stat) - 1:
+                out2.append('?')
+            else:
+                if int(stat[statdef['rtpriority']]) < 10:
+                    out2.append('_')
+                    out2.append(stat[statdef['rtpriority']])
+                else:
+                    out2.append(stat[statdef['rtpriority']].rjust(2))
     out.append(''.join(out2))
 
     try:

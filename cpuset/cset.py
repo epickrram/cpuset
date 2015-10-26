@@ -104,7 +104,7 @@ class CpuSet(object):
                 log.debug("the cpuset %s already exists, skipping", path)
                 self = CpuSet.sets[path]  # questionable....
                 return
-            cpus = CpuSet.basepath + path + "/cpus"
+            cpus = CpuSet.basepath + path + "/cpuset.cpus"
             if not os.access(cpus, os.F_OK):
                 # not a cpuset directory
                 str = '%s is not a cpuset directory' % (CpuSet.basepath + path)
@@ -158,36 +158,36 @@ class CpuSet(object):
         raise AttributeError, "deletion of properties not allowed"
 
     def getcpus(self): 
-        f = file(CpuSet.basepath+self.path+"/cpus")
+        f = file(CpuSet.basepath+self.path+"/cpuset.cpus")
         return f.readline()[:-1]
     def setcpus(self, newval):
         cpuspec_check(newval)
-        f = file(CpuSet.basepath+self.path+"/cpus",'w')
+        f = file(CpuSet.basepath+self.path+"/cpuset.cpus",'w')
         f.write(str(newval))
         f.close()
         log.debug("-> prop_set %s.cpus = %s", self.path, newval) 
     cpus = property(fget=getcpus, fset=setcpus, fdel=delprop, doc="CPU specifier")
 
     def getmems(self): 
-        f = file(CpuSet.basepath+self.path+"/mems")
+        f = file(CpuSet.basepath+self.path+"/cpuset.mems")
         return f.readline()[:-1]
     def setmems(self, newval): 
         # FIXME: check format for correctness
-        f = file(CpuSet.basepath+self.path+"/mems",'w')
+        f = file(CpuSet.basepath+self.path+"/cpuset.mems",'w')
         f.write(str(newval))
         f.close()
         log.debug("-> prop_set %s.mems = %s", self.path, newval) 
     mems = property(getmems, setmems, delprop, "Mem node specifier")
     
     def getcpuxlsv(self): 
-        f = file(CpuSet.basepath+self.path+"/cpu_exclusive")
+        f = file(CpuSet.basepath+self.path+"/cpuset.cpu_exclusive")
         if f.readline()[:-1] == '1':
             return True
         else:
             return False
     def setcpuxlsv(self, newval):
         log.debug("-> prop_set %s.cpu_exclusive = %s", self.path, newval) 
-        f = file(CpuSet.basepath+self.path+"/cpu_exclusive",'w')
+        f = file(CpuSet.basepath+self.path+"/cpuset.cpu_exclusive",'w')
         if newval:
             f.write('1')
         else:
@@ -197,14 +197,14 @@ class CpuSet(object):
                              "CPU exclusive flag")
 
     def getmemxlsv(self): 
-        f = file(CpuSet.basepath+self.path+"/mem_exclusive")
+        f = file(CpuSet.basepath+self.path+"/cpuset.mem_exclusive")
         if f.readline()[:-1] == '1':
             return True
         else:
             return False
     def setmemxlsv(self, newval):
         log.debug("-> prop_set %s.mem_exclusive = %s", self.path, newval) 
-        f = file(CpuSet.basepath+self.path+"/mem_exclusive",'w')
+        f = file(CpuSet.basepath+self.path+"/cpuset.mem_exclusive",'w')
         if newval:
             f.write('1')
         else:
